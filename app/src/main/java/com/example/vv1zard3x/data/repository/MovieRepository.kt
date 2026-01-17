@@ -11,6 +11,7 @@ import com.example.vv1zard3x.data.model.Movie
 import com.example.vv1zard3x.data.model.MovieDetails
 import com.example.vv1zard3x.data.remote.RetrofitMovieApi
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -154,6 +155,8 @@ class MovieRepository @Inject constructor(
                 val results = movieApi.searchMovies(query)
                 val resultsWithFavorites = results.map { it.copy(isFavorite = it.id in favoriteIds) }
                 emit(resultsWithFavorites)
+            } catch (e: CancellationException) {
+                throw e // Пробрасываем отмену дальше
             } catch (e: Exception) {
                 emit(movieDao.searchMovies(query).first())
             }

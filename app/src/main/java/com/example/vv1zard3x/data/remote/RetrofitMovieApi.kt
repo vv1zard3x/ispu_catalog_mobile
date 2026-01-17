@@ -40,7 +40,7 @@ class RetrofitMovieApi @Inject constructor(
 
     override suspend fun searchMovies(query: String): List<Movie> {
         return try {
-            apiService.getMovies(search = query).results.toMovies()
+            apiService.searchMovies(query = query).results.toMovies()
         } catch (e: Exception) {
             emptyList()
         }

@@ -8,6 +8,7 @@ import com.example.vv1zard3x.data.model.MovieDetails
 import com.example.vv1zard3x.data.repository.MovieRepository
 import com.example.vv1zard3x.ui.components.FilterState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -217,6 +218,8 @@ class MovieViewModel @Inject constructor(
                     results = resultsWithFavorites,
                     isLoading = false
                 )
+            } catch (e: CancellationException) {
+                throw e // Пробрасываем отмену, не обрабатываем как ошибку
             } catch (e: Exception) {
                 _searchState.value = _searchState.value.copy(
                     results = emptyList(),
