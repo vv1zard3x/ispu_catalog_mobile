@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Film reel outer circle -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M54,24
+                         a30,30 0 1,0 0.001,0
+                         M54,28
+                         a26,26 0 1,1 -0.001,0"/>
+    
+    <!-- Film reel holes -->
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M54,34 a4,4 0 1,0 0.001,0"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M40,44 a4,4 0 1,0 0.001,0"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M68,44 a4,4 0 1,0 0.001,0"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M36,58 a4,4 0 1,0 0.001,0"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M72,58 a4,4 0 1,0 0.001,0"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M44,70 a4,4 0 1,0 0.001,0"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M64,70 a4,4 0 1,0 0.001,0"/>
+    
+    <!-- Play button triangle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,46 L48,62 L64,54 Z"/>
+    
+    <!-- Clapperboard stripes -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M30,78 L78,78 L78,84 L30,84 Z"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M34,78 L38,84"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M44,78 L48,84"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M54,78 L58,84"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M64,78 L68,84"/>
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M74,78 L78,84"/>
+</vector>
