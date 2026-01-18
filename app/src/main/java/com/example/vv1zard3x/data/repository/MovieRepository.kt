@@ -102,48 +102,55 @@ class MovieRepository @Inject constructor(
      * Получить фильмы с фильтрами
      */
     fun getMoviesFiltered(
-        genreId: Int? = null,
-        year: Int? = null,
-        minRating: Float? = null
+        genreIds: Set<Int> = emptySet(),
+        years: Set<Int> = emptySet(),
+        minRating: Float? = null,
+        sortBy: com.example.vv1zard3x.ui.components.SortOption = com.example.vv1zard3x.ui.components.SortOption.RATING_DESC
     ): Flow<List<Movie>> = flow {
         val cachedMovies = movieDao.getAllMovies().first()
         val favoriteIds = cachedMovies.filter { it.isFavorite }.map { it.id }.toSet()
         
-        if (isNetworkAvailable()) {
-            try {
-                val results = movieApi.getMoviesFiltered(
-                    genreId = genreId,
-                    year = year,
-                    minRating = minRating
-                )
-                val resultsWithFavorites = results.map { it.copy(isFavorite = it.id in favoriteIds) }
-                emit(resultsWithFavorites)
-            } catch (e: Exception) {
-                emit(filterLocally(genreId, year, minRating))
-            }
-        } else {
-            emit(filterLocally(genreId, year, minRating))
-        }
+        // Фильтрация локально (API не поддерживает множественные фильтры)
+        val filtered = filterLocally(genreIds, years, minRating)
+        val sorted = sortMovies(filtered, sortBy)
+        val resultsWithFavorites = sorted.map { it.copy(isFavorite = it.id in favoriteIds) }
+        emit(resultsWithFavorites)
     }
 
     private suspend fun filterLocally(
-        genreId: Int?,
-        year: Int?,
+        genreIds: Set<Int>,
+        years: Set<Int>,
         minRating: Float?
     ): List<Movie> {
         var movies = movieDao.getAllMovies().first()
         
-        if (genreId != null) {
-            movies = movies.filter { genreId in it.genreIds }
+        if (genreIds.isNotEmpty()) {
+            movies = movies.filter { movie -> 
+                movie.genreIds.any { it in genreIds }
+            }
         }
-        if (year != null) {
-            movies = movies.filter { it.releaseDate.startsWith(year.toString()) }
+        if (years.isNotEmpty()) {
+            movies = movies.filter { movie ->
+                val movieYear = movie.releaseDate.take(4).toIntOrNull()
+                movieYear != null && movieYear in years
+            }
         }
         if (minRating != null) {
             movies = movies.filter { it.rating >= minRating }
         }
         
-        return movies.sortedByDescending { it.rating }
+        return movies
+    }
+
+    private fun sortMovies(movies: List<Movie>, sortBy: com.example.vv1zard3x.ui.components.SortOption): List<Movie> {
+        return when (sortBy) {
+            com.example.vv1zard3x.ui.components.SortOption.RATING_DESC -> movies.sortedByDescending { it.rating }
+            com.example.vv1zard3x.ui.components.SortOption.RATING_ASC -> movies.sortedBy { it.rating }
+            com.example.vv1zard3x.ui.components.SortOption.YEAR_DESC -> movies.sortedByDescending { it.releaseDate }
+            com.example.vv1zard3x.ui.components.SortOption.YEAR_ASC -> movies.sortedBy { it.releaseDate }
+            com.example.vv1zard3x.ui.components.SortOption.TITLE_ASC -> movies.sortedBy { it.title.lowercase() }
+            com.example.vv1zard3x.ui.components.SortOption.TITLE_DESC -> movies.sortedByDescending { it.title.lowercase() }
+        }
     }
 
     fun searchMovies(query: String): Flow<List<Movie>> = flow {

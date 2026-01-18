@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -23,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -52,8 +54,8 @@ fun HomeScreen(
 
     // Подсчёт активных фильтров
     val activeFiltersCount = listOfNotNull(
-        state.filterState.genreId,
-        state.filterState.year,
+        state.filterState.genreIds.takeIf { it.isNotEmpty() },
+        state.filterState.years.takeIf { it.isNotEmpty() },
         state.filterState.minRating
     ).size
 
@@ -95,18 +97,44 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                state.filterState.genreId?.let { genreId ->
-                    val genreName = state.genres.find { it.id == genreId }?.name ?: ""
-                    FilterTag(text = genreName)
+                if (state.filterState.genreIds.isNotEmpty()) {
+                    val genreNames = state.genres
+                        .filter { it.id in state.filterState.genreIds }
+                        .joinToString(", ") { it.name }
+                    if (genreNames.isNotEmpty()) {
+                        FilterTag(text = genreNames)
+                    }
                 }
-                state.filterState.year?.let { year ->
-                    FilterTag(text = year.toString())
+                if (state.filterState.years.isNotEmpty()) {
+                    val yearsText = state.filterState.years.sorted().joinToString(", ")
+                    FilterTag(text = yearsText)
                 }
                 state.filterState.minRating?.let { rating ->
                     FilterTag(text = "★ ${String.format("%.1f", rating)}+")
                 }
+                
+                Spacer(modifier = Modifier.weight(1f))
+                
+                // Кнопка сброса фильтров
+                SuggestionChip(
+                    onClick = { viewModel.clearFilters() },
+                    label = {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Text("Сбросить", style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
+                )
             }
         }
 
@@ -193,7 +221,7 @@ fun HomeScreen(
 
 @Composable
 private fun FilterTag(text: String) {
-    androidx.compose.material3.SuggestionChip(
+    SuggestionChip(
         onClick = { },
         label = { Text(text, style = MaterialTheme.typography.labelSmall) }
     )

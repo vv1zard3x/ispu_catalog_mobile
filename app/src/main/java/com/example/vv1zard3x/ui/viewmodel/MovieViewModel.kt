@@ -143,6 +143,14 @@ class MovieViewModel @Inject constructor(
                     results = updatedResults,
                     allMovies = updatedAllMovies
                 )
+                
+                // Обновляем состояние избранного в деталях фильма
+                _movieDetailState.value.movieDetails?.let { details ->
+                    val updatedMovie = details.movie.copy(isFavorite = details.movie.id in favoriteIds)
+                    _movieDetailState.value = _movieDetailState.value.copy(
+                        movieDetails = details.copy(movie = updatedMovie)
+                    )
+                }
             }
         }
     }
@@ -155,9 +163,10 @@ class MovieViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.getMoviesFiltered(
-                    genreId = filterState.genreId,
-                    year = filterState.year,
-                    minRating = filterState.minRating
+                    genreIds = filterState.genreIds,
+                    years = filterState.years,
+                    minRating = filterState.minRating,
+                    sortBy = filterState.sortBy
                 ).collect { movies ->
                     val favorites = _favoritesState.value.map { it.id }.toSet()
                     val moviesWithFavorites = movies.map { it.copy(isFavorite = it.id in favorites) }
