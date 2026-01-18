@@ -42,6 +42,13 @@ sealed class Screen(
     ) {
         fun createRoute(movieId: Int) = "movie/$movieId"
     }
+
+    data object ActorDetail : Screen(
+        route = "actor/{actorId}",
+        title = "Актер"
+    ) {
+        fun createRoute(actorId: Int) = "actor/$actorId"
+    }
 }
 
 val bottomNavItems = listOf(Screen.Home, Screen.Search, Screen.Favorites)

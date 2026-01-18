@@ -1,8 +1,10 @@
 package com.example.vv1zard3x.data.remote
 
 import com.example.vv1zard3x.data.model.Actor
+import com.example.vv1zard3x.data.model.ActorDetail
 import com.example.vv1zard3x.data.model.Genre
 import com.example.vv1zard3x.data.model.Movie
+import com.example.vv1zard3x.data.remote.dto.toActorDetail
 import com.example.vv1zard3x.data.remote.dto.toActors
 import com.example.vv1zard3x.data.remote.dto.toGenres
 import com.example.vv1zard3x.data.remote.dto.toMovie
@@ -40,7 +42,7 @@ class RetrofitMovieApi @Inject constructor(
 
     override suspend fun searchMovies(query: String): List<Movie> {
         return try {
-            apiService.searchMovies(query = query).results.toMovies()
+            apiService.getMovies(search = query).results.toMovies()
         } catch (e: Exception) {
             emptyList()
         }
@@ -93,11 +95,19 @@ class RetrofitMovieApi @Inject constructor(
     /**
      * Получить фильмы актёра
      */
-    suspend fun getActorMovies(actorId: Int): List<Movie> {
+    override suspend fun getActorMovies(actorId: Int): List<Movie> {
         return try {
             apiService.getActorMovies(actorId).results.toMovies()
         } catch (e: Exception) {
             emptyList()
+        }
+    }
+
+    override suspend fun getActorDetails(actorId: Int): ActorDetail? {
+        return try {
+            apiService.getActorDetails(actorId).toActorDetail()
+        } catch (e: Exception) {
+            null
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.vv1zard3x.data.remote.dto
 
 import com.example.vv1zard3x.data.model.Actor
+import com.example.vv1zard3x.data.model.ActorDetail
 import com.example.vv1zard3x.data.model.Genre
 import com.example.vv1zard3x.data.model.Movie
 
@@ -28,7 +29,7 @@ fun MovieDto.toMovie(): Movie = Movie(
     backdropPath = backdropPath.toFullUrl(),
     rating = rating,
     releaseDate = releaseDate,
-    genreIds = genreIds,
+    genreIds = genreIds ?: genres?.map { it.id } ?: emptyList(),
     voteCount = voteCount,
     isFavorite = false
 )
@@ -48,3 +49,12 @@ fun GenreDto.toGenre(): Genre = Genre(
 fun List<MovieDto>.toMovies(): List<Movie> = map { it.toMovie() }
 fun List<ActorDto>.toActors(): List<Actor> = map { it.toActor() }
 fun List<GenreDto>.toGenres(): List<Genre> = map { it.toGenre() }
+
+fun ActorDetailDto.toActorDetail(): ActorDetail = ActorDetail(
+    id = id,
+    name = name,
+    biography = biography ?: "",
+    birthday = birthday,
+    placeOfBirth = placeOfBirth,
+    profilePath = profilePath.toFullUrl()
+)

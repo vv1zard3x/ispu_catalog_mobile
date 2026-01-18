@@ -23,10 +23,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.vv1zard3x.ui.screens.ActorDetailScreen
 import com.example.vv1zard3x.ui.screens.FavoritesScreen
 import com.example.vv1zard3x.ui.screens.HomeScreen
 import com.example.vv1zard3x.ui.screens.MovieDetailScreen
 import com.example.vv1zard3x.ui.screens.SearchScreen
+import com.example.vv1zard3x.ui.viewmodel.ActorDetailViewModel
 import com.example.vv1zard3x.ui.viewmodel.MovieViewModel
 
 @Composable
@@ -131,7 +133,28 @@ fun MovieNavigation(
                 MovieDetailScreen(
                     movieId = movieId,
                     viewModel = viewModel,
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
+                    onActorClick = { actorId ->
+                        navController.navigate(Screen.ActorDetail.createRoute(actorId))
+                    }
+                )
+            }
+            
+            composable(
+                route = Screen.ActorDetail.route,
+                arguments = listOf(
+                    navArgument("actorId") { type = NavType.IntType }
+                )
+            ) { backStackEntry ->
+                val actorId = backStackEntry.arguments?.getInt("actorId") ?: 0
+                val actorViewModel = hiltViewModel<ActorDetailViewModel>()
+                ActorDetailScreen(
+                    actorId = actorId,
+                    viewModel = actorViewModel,
+                    onBackClick = { navController.popBackStack() },
+                    onMovieClick = { movieId ->
+                        navController.navigate(Screen.MovieDetail.createRoute(movieId))
+                    }
                 )
             }
         }

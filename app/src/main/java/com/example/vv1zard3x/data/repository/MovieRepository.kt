@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import com.example.vv1zard3x.data.local.GenreDao
 import com.example.vv1zard3x.data.local.MovieDao
 import com.example.vv1zard3x.data.model.Actor
+import com.example.vv1zard3x.data.model.ActorDetail
 import com.example.vv1zard3x.data.model.Genre
 import com.example.vv1zard3x.data.model.Movie
 import com.example.vv1zard3x.data.model.MovieDetails
@@ -224,6 +225,35 @@ class MovieRepository @Inject constructor(
             }
         } else if (cached.isEmpty()) {
             emit(emptyList())
+        }
+    }
+
+    suspend fun getActorDetails(actorId: Int): ActorDetail? {
+        return if (isNetworkAvailable()) {
+            try {
+                movieApi.getActorDetails(actorId)
+            } catch (e: Exception) {
+                null
+            }
+        } else {
+            null
+        }
+    }
+
+    suspend fun getActorMovies(actorId: Int): List<Movie> {
+        val favoriteIds = movieDao.getFavoriteMovies().first().map { it.id }.toSet()
+        
+        return if (isNetworkAvailable()) {
+            try {
+                val movies = movieApi.getActorMovies(actorId)
+                movies.map { movie ->
+                    movie.copy(isFavorite = movie.id in favoriteIds)
+                }
+            } catch (e: Exception) {
+                emptyList()
+            }
+        } else {
+            emptyList()
         }
     }
 }

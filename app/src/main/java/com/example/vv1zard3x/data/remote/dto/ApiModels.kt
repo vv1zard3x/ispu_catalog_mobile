@@ -39,7 +39,8 @@ data class MovieDto(
     @SerializedName("vote_count")
     val voteCount: Int,
     @SerializedName("genre_ids")
-    val genreIds: List<Int>
+    val genreIds: List<Int>? = null,
+    val genres: List<GenreDto>? = null
 )
 
 /**

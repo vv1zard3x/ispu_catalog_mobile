@@ -1,6 +1,7 @@
 package com.example.vv1zard3x.data.remote
 
 import com.example.vv1zard3x.data.model.Actor
+import com.example.vv1zard3x.data.model.ActorDetail
 import com.example.vv1zard3x.data.model.Genre
 import com.example.vv1zard3x.data.model.Movie
 import kotlinx.coroutines.delay
@@ -265,5 +266,31 @@ class MockMovieApi @Inject constructor() : MovieApi {
     override suspend fun getGenres(): List<Genre> {
         delay(200)
         return mockGenres
+    }
+
+    override suspend fun getActorDetails(actorId: Int): ActorDetail? {
+        delay(300)
+        // Ищем актера в списке фильмов
+        val actorInfo = mockActors.values.flatten().find { it.id == actorId }
+        
+        return actorInfo?.let {
+            ActorDetail(
+                id = it.id,
+                name = it.name,
+                biography = "Биография для актера ${it.name} (ID: ${it.id}). Здесь должно быть подробное описание карьеры и жизни актера.",
+                birthday = "1980-01-01",
+                placeOfBirth = "Голливуд, США",
+                profilePath = it.profilePath
+            )
+        }
+    }
+
+    override suspend fun getActorMovies(actorId: Int): List<Movie> {
+        delay(400)
+        // Возвращаем все фильмы, где есть этот актер
+        return mockMovies.filter { movie ->
+            val cast = mockActors[movie.id] ?: emptyList()
+            cast.any { it.id == actorId }
+        }
     }
 }

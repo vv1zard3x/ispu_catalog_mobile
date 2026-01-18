@@ -1,6 +1,7 @@
 package com.example.vv1zard3x.data.remote
 
 import com.example.vv1zard3x.data.model.Actor
+import com.example.vv1zard3x.data.model.ActorDetail
 import com.example.vv1zard3x.data.model.Genre
 import com.example.vv1zard3x.data.model.Movie
 
@@ -15,4 +16,6 @@ interface MovieApi {
     suspend fun getMovieCast(movieId: Int): List<Actor>
     suspend fun searchMovies(query: String): List<Movie>
     suspend fun getGenres(): List<Genre>
+    suspend fun getActorDetails(actorId: Int): ActorDetail?
+    suspend fun getActorMovies(actorId: Int): List<Movie>
 }

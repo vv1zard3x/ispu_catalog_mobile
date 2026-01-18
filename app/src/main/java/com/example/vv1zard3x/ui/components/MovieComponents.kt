@@ -312,10 +312,13 @@ fun ActorCard(
     name: String,
     character: String,
     profilePath: String?,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.width(100.dp),
+        modifier = modifier
+            .width(100.dp)
+            .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SubcomposeAsyncImage(

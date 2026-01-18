@@ -52,7 +52,8 @@ import com.example.vv1zard3x.ui.viewmodel.MovieViewModel
 fun MovieDetailScreen(
     movieId: Int,
     viewModel: MovieViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onActorClick: (Int) -> Unit
 ) {
     val state by viewModel.movieDetailState.collectAsState()
 
@@ -247,7 +248,8 @@ fun MovieDetailScreen(
                                     ActorCard(
                                         name = actor.name,
                                         character = actor.character,
-                                        profilePath = actor.profilePath
+                                        profilePath = actor.profilePath,
+                                        onClick = { onActorClick(actor.id) }
                                     )
                                 }
                             }
@@ -300,6 +302,14 @@ fun MovieDetailScreen(
                         )
                     }
                 }
+            }
+        }
+        else -> {
+             Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
         }
     }

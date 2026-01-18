@@ -31,13 +31,6 @@ interface MovieApiService {
     @GET("api/movies/{id}/")
     suspend fun getMovieDetails(@Path("id") movieId: Int): MovieDto
     
-    @GET("api/movies/search/")
-    suspend fun searchMovies(
-        @Query("q") query: String,
-        @Query("page") page: Int = 1,
-        @Query("ordering") ordering: String = "-rating"
-    ): MoviesResponse
-    
     @GET("api/movies/{id}/cast/")
     suspend fun getMovieCast(@Path("id") movieId: Int): List<ActorDto>
     
